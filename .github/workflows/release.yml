@@ -28,7 +28,7 @@ jobs:
     - name: Set up MSVC (Windows)
       if: runner.os == 'Windows'
       run: |
-        cmd /c ""C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat""
+        cmd.exe /c ""C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat""
 
     - name: Build project
       run: |
