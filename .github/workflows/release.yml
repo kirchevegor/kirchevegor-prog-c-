@@ -72,6 +72,7 @@ jobs:
         name: build-macos-latest  # Загружаем артефакт для macOS
 
     - name: Create Release
+      id: create_release
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -82,6 +83,21 @@ jobs:
           Автоматически созданный релиз для версии ${{ github.ref_name }}.
         draft: false
         prerelease: false
-        files: |
-          main-linux.tar.gz
-          main-macos.tar.gz
+
+    - name: Upload Linux artifact to release
+      if: matrix.os == 'ubuntu-latest'
+      uses: actions/upload-release-asset@v1
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./main-linux.tar.gz
+        asset_name: main-linux.tar.gz
+        asset_content_type: application/gzip
+
+    - name: Upload macOS artifact to release
+      if: matrix.os == 'macos-latest'
+      uses: actions/upload-release-asset@v1
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./main-macos.tar.gz
+        asset_name: main-macos.tar.gz
+        asset_content_type: application/gzip
