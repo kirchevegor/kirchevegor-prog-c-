@@ -1,13 +1,12 @@
 name: Build and Release
 
 on:
-  workflow_dispatch:
   push:
     tags:
-      - 'v*' # Запуск при создании тегов, начинающихся с 'v'
-      
+      - 'v*'  # Запуск при создании тегов, начинающихся с 'v'
     branches:
-      - main # Также можно запускать на каждый коммит в main (опционально)
+      - main  # Запуск на каждый коммит в main (опционально)
+  workflow_dispatch:  # Ручной запуск
 
 jobs:
   build-and-release:
@@ -16,7 +15,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest] # Сборка для Linux и Windows
+        os: [ubuntu-latest, windows-latest]  # Сборка для Linux и Windows
 
     steps:
     - name: Checkout repository
@@ -29,8 +28,8 @@ jobs:
     - name: Set up build tools (Windows)
       if: runner.os == 'Windows'
       run: |
-       "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"
-      shell: cmd
+        "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"
+      shell: cmd  # Исправление ошибки с call
 
     - name: Build project
       run: |
@@ -39,6 +38,7 @@ jobs:
         else
           cl /EHsc main.cpp /Fe:main.exe
         fi
+      shell: bash  # Указание оболочки
 
     - name: Archive build
       run: |
@@ -72,7 +72,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: ${{ github.ref_name }} # Имя тега
+        tag_name: ${{ github.ref_name }}  # Имя тега
         release_name: Release ${{ github.ref_name }}
         body: |
           Автоматически созданный релиз для версии ${{ github.ref_name }}.
