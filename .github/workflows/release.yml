@@ -29,7 +29,8 @@ jobs:
     - name: Set up build tools (Windows)
       if: runner.os == 'Windows'
       run: |
-        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"
+       "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"
+      shell: cmd
 
     - name: Build project
       run: |
