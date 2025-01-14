@@ -1,9 +1,11 @@
 name: Build and Release
 
 on:
+  workflow_dispatch:
   push:
     tags:
       - 'v*' # Запуск при создании тегов, начинающихся с 'v'
+      
     branches:
       - main # Также можно запускать на каждый коммит в main (опционально)
 
