@@ -48,7 +48,7 @@ jobs:
     - name: Upload artifact
       uses: actions/upload-artifact@v3
       with:
-        name: ${{ runner.os }}-build
+        name: build-${{ runner.os }}  # Убедитесь, что имя артефакта уникально
         path: |
           main-linux.tar.gz
           main-macos.tar.gz
@@ -62,7 +62,7 @@ jobs:
     - name: Download build artifacts
       uses: actions/download-artifact@v3
       with:
-        name: ${{ matrix.os }}-build
+        name: build-${{ matrix.os }}  # Имя артефакта должно быть точно таким же
 
     - name: Create Release
       uses: actions/create-release@v1
