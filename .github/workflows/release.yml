@@ -48,7 +48,7 @@ jobs:
     - name: Upload artifact
       uses: actions/upload-artifact@v3
       with:
-        name: build-${{ runner.os }}  # Имя артефакта для каждой ОС
+        name: build-${{ runner.os }}  # Используем имя артефакта с операционной системой
         path: |
           main-linux.tar.gz
           main-macos.tar.gz
@@ -59,15 +59,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Download build artifacts
+    - name: Download build artifact for Linux
+      if: matrix.os == 'ubuntu-latest'
       uses: actions/download-artifact@v3
       with:
-        name: build-ubuntu-latest  # Артефакт для Linux
+        name: build-ubuntu-latest  # Загружаем артефакт для Linux
 
-    - name: Download build artifacts (macOS)
+    - name: Download build artifact for macOS
+      if: matrix.os == 'macos-latest'
       uses: actions/download-artifact@v3
       with:
-        name: build-macos-latest  # Артефакт для macOS
+        name: build-macos-latest  # Загружаем артефакт для macOS
 
     - name: Create Release
       uses: actions/create-release@v1
