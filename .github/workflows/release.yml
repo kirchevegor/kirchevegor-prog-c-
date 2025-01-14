@@ -29,10 +29,7 @@ jobs:
       if: runner.os == 'macOS'
       run: brew install gcc
 
-    - name: Set up MSVC (Windows)
-      if: runner.os == 'Windows'
-      run: |
-        cmd.exe /c ""C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat""
+    
 
     - name: Build project
       run: |
