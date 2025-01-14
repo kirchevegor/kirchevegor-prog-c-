@@ -59,10 +59,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Download build artifacts
+    - name: Download build artifacts (Linux)
+      if: runner.os == 'Linux'
       uses: actions/download-artifact@v3
       with:
-        name: build-${{ matrix.os }}  # Имя артефакта должно быть точно таким же
+        name: build-ubuntu-latest  # Укажите имя артефакта для Linux
+
+    - name: Download build artifacts (macOS)
+      if: runner.os == 'macOS'
+      uses: actions/download-artifact@v3
+      with:
+        name: build-macos-latest  # Укажите имя артефакта для macOS
 
     - name: Create Release
       uses: actions/create-release@v1
