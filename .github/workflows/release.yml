@@ -1,0 +1,80 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*' # Запуск при создании тегов, начинающихся с 'v'
+    branches:
+      - main # Также можно запускать на каждый коммит в main (опционально)
+
+jobs:
+  build-and-release:
+    name: Build and Create Release
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest] # Сборка для Linux и Windows
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up build tools (Linux)
+      if: runner.os == 'Linux'
+      run: sudo apt-get update && sudo apt-get install -y build-essential
+
+    - name: Set up build tools (Windows)
+      if: runner.os == 'Windows'
+      run: |
+        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"
+
+    - name: Build project
+      run: |
+        if [ "${{ runner.os }}" == "Linux" ]; then
+          g++ -o main main.cpp
+        else
+          cl /EHsc main.cpp /Fe:main.exe
+        fi
+
+    - name: Archive build
+      run: |
+        if [ "${{ runner.os }}" == "Linux" ]; then
+          tar -czvf main-linux.tar.gz main
+        else
+          powershell Compress-Archive -Path main.exe -DestinationPath main-windows.zip
+        fi
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ runner.os }}-build
+        path: |
+          main-linux.tar.gz
+          main-windows.zip
+
+  release:
+    name: Create GitHub Release
+    needs: build-and-release
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Download build artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: ${{ matrix.os }}-build
+
+    - name: Create Release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref_name }} # Имя тега
+        release_name: Release ${{ github.ref_name }}
+        body: |
+          Автоматически созданный релиз для версии ${{ github.ref_name }}.
+        draft: false
+        prerelease: false
+        files: |
+          main-linux.tar.gz
+          main-windows.zip
