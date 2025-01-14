@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - feature/github_actions
+  workflow_dispatch:  # Ручной запуск
 
 permissions:
   contents: write  # Права на запись
